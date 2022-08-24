@@ -82,17 +82,32 @@ score_1 = 0
 score1_txt = font1.render(f"Score : {score_1}", True, (81,17,17))
 score_2 = 0
 score2_txt = font1.render(f"Score : {score_2}", True, (81,17,17))
-clock = time.Clock
+text = font1.render(f"You Win or Lose idk", True, (0,0,0))
+clock = time.Clock()
 run = True
-finish = False
+finish = False  
 while run:
-    window.blit(background, (0, 0))
     for e in event.get():
         if e.type == QUIT:
             run = False
+        if e.type == KEYDOWN:
+            if e.key == K_r:
+                window.blit(background,(0, 0))
+                window.blit(score1_txt, (50,15))
+                window.blit(score2_txt, (450,15))
+
+                paddle_1.update()
+                paddle_2.update()
+                ball.update()
+                
+                paddle_1.draw()
+                paddle_2.draw()
+                ball.draw()
+                score_1 = 0
+                score_2 = 0
     if not finish:
         window.blit(background,(0, 0))
-        window.blit(score1_txt, (100,15))
+        window.blit(score1_txt, (50,15))
         window.blit(score2_txt, (450,15))
 
         paddle_1.update()
@@ -102,10 +117,20 @@ while run:
         paddle_1.draw()
         paddle_2.draw()
         ball.draw()
-    if sprite.collide_rect(paddle_1, ball):
-        ball.speed_x *= -1
-        score_1 += 1
-    if sprite.collide_rect(paddle_2, ball):
-        ball.speed_x *= -1
-        score_2 += 1
+        if ball.rect.x == 600:
+            ball.speed_x *= -1
+            score_1 += 1
+            score1_txt = font1.render(f"Score : {score_1}", True, (81,17,17))
+        if ball.rect.x == 0:
+            ball.speed_x *= -1
+            score_2 += 1
+            score2_txt = font1.render(f"Score : {score_2}", True, (81,17,17))
+        if sprite.collide_rect(paddle_1, ball):
+            ball.speed_x *= -1
+        if sprite.collide_rect(paddle_2, ball):
+            ball.speed_x *= -1
+        if score_1 == 1 or score_2 == 10:
+            finish = True
+            window.blit(background, (0, 0))
+            window.blit(text, (150, 150))
     display.update()
